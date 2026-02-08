@@ -30,6 +30,8 @@ export class RentalsService {
         } catch (error) {
             if (error.message.includes('Client is under 14 years old'))
                 throw new HttpException('Запрещено арендовывать компьютер более, чем на 3 часа клиентам младше 14 лет', HttpStatus.BAD_REQUEST)
+            if (error.message.includes('No free computers'))
+                throw new HttpException('Нет свободных компов', HttpStatus.BAD_REQUEST)
         }
     }
 

@@ -60,6 +60,38 @@ CREATE TRIGGER check_age_before_rental_update
   FOR EACH ROW
   EXECUTE PROCEDURE check_client_age_for_rental();
 `;
+const TRIGGER_RENTAL_PROHIBITION_FREE_COMPUTERS = `
+CREATE OR REPLACE FUNCTION check_free_computer()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  free_computers INTEGER;
+BEGIN
+  SELECT COUNT(*) INTO free_computers 
+  FROM computers 
+  WHERE status = 'free';
+  
+  IF free_computers = 0 THEN
+    RAISE EXCEPTION 'No free computers';
+  END IF;
+  
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS check_free_computer_insert ON rentals;
+CREATE TRIGGER check_free_computer_insert
+  BEFORE INSERT ON rentals
+  FOR EACH ROW
+  EXECUTE PROCEDURE check_free_computer();
+
+DROP TRIGGER IF EXISTS check_free_computer_update ON rentals;
+CREATE TRIGGER check_free_computer_update
+  BEFORE UPDATE ON rentals
+  FOR EACH ROW
+  EXECUTE PROCEDURE check_free_computer();
+`;
 
 @Injectable()
 export class DatabaseTriggersService implements OnModuleInit {
@@ -76,6 +108,7 @@ export class DatabaseTriggersService implements OnModuleInit {
         try {
             await this.sequelize.query(TRIGGER_RENTAL_COMLITED);
             await this.sequelize.query(TRIGGER_RENTAL_PROHIBITION_SPROUT);
+            await this.sequelize.query(TRIGGER_RENTAL_PROHIBITION_FREE_COMPUTERS);
             console.log('[DatabaseTriggers] Triggers applied');
         } catch (err) {
             console.error('[DatabaseTriggers] Failed to apply triggers:', err);
