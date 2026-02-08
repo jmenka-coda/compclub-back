@@ -3,7 +3,7 @@ import { Rental } from "src/rentals/rentals.model";
 
 interface PackageServiceCreationAttr {
     name: string;
-    time: Date;
+    timeMinutes: Date;
     typeSpecifComp: string;
     timeDay: string;
     price: number;
@@ -18,13 +18,13 @@ export class PackageService extends Model<PackageService, PackageServiceCreation
     @Column({ type: DataType.STRING, unique: true, allowNull: false })
     name: string
 
-    @Column({ type: DataType.TIME, allowNull: false })
-    time: Date;
+    @Column({ type: DataType.INTEGER, allowNull: false })
+    timeMinutes: number;
 
     @Column({ type: DataType.ENUM("weak", "average", "powerful"), allowNull: false })
     typeSpecifComp: string;
 
-    @Column({ type: DataType.ENUM("morning", "аfternoon", "evening", "night"), allowNull: false })
+    @Column({ type: DataType.ENUM("morning", "afternoon", "evening", "night"), allowNull: false })
     timeDay: string;
 
     @Column({ type: DataType.DECIMAL(4, 2), allowNull: false })

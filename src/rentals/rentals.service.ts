@@ -16,10 +16,9 @@ export class RentalsService {
 
         let packageSer = await this.packageSerService.getPackageById(rental.get('packageId')) as PackageService;
         let startTime = rental.get('startTime') as Date;
-        let time = packageSer.get('time');
+        let timeMinutes = packageSer.get('timeMinutes');
 
-        let times = time.toString().split(":");
-        let endTime = new Date(startTime.getTime() + (Number(times[0]) * 60 * 60 * 1000 + Number(times[1]) * 60 * 1000 + Number(times[1]) * 1000));
+        let endTime = new Date(startTime.getTime() + timeMinutes * 60 * 1000);
 
         rental.set('endTime', endTime);
         rental.set('totalCost', packageSer.get('price'));

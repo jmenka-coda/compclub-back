@@ -21,6 +21,29 @@ CREATE TRIGGER trigger_rental_complited
   FOR EACH ROW
   EXECUTE PROCEDURE notify_rental_complited();
 `;
+const TRIGGER_RENTAL_PROHIBITION_SPROUT = `
+CREATE OR REPLACE FUNCTION notify_rental_prohibition_sprout()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF 
+    EXTRACT(YEAR FROM AGE(NOW(), 
+        SELECT dateOfBirth FROM visitors WHERE id = NEW."computerId"
+    )) < 14 
+      THEN
+        RETURN NULL;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trigger_rental_prohibition_sprout ON rentals;
+CREATE TRIGGER trigger_rental_prohibition_sprout
+  BEFORE INSERT AND UPDATE ON rentals
+  FOR EACH ROW
+  EXECUTE PROCEDURE notify_rental_prohibition_sprout();
+`;
 
 @Injectable()
 export class DatabaseTriggersService implements OnModuleInit {
