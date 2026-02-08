@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Rental } from './rentals.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateRentalDto } from './dto/create-rentals.dto';
@@ -12,20 +12,25 @@ export class RentalsService {
         private packageSerService: PackageServiceService) { }
 
     async createRental(dto: CreateRentalDto) {
-        const rental = await this.rentalRepository.create(dto);
+        try {
+            const rental = await this.rentalRepository.create(dto);
 
-        let packageSer = await this.packageSerService.getPackageById(rental.get('packageId')) as PackageService;
-        let startTime = rental.get('startTime') as Date;
-        let timeMinutes = packageSer.get('timeMinutes');
+            let packageSer = await this.packageSerService.getPackageById(rental.get('packageId')) as PackageService;
+            let startTime = rental.get('startTime') as Date;
+            let timeMinutes = packageSer.get('timeMinutes');
 
-        let endTime = new Date(startTime.getTime() + timeMinutes * 60 * 1000);
+            let endTime = new Date(startTime.getTime() + timeMinutes * 60 * 1000);
 
-        rental.set('endTime', endTime);
-        rental.set('totalCost', packageSer.get('price'));
+            rental.set('endTime', endTime);
+            rental.set('totalCost', packageSer.get('price'));
 
-        await rental.save();
+            await rental.save();
 
-        return rental;
+            return rental;
+        } catch (error) {
+            if (error.message.includes('Client is under 14 years old'))
+                throw new HttpException('Запрещено арендовывать компьютер более, чем на 3 часа клиентам младше 14 лет', HttpStatus.BAD_REQUEST)
+        }
     }
 
 
