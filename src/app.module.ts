@@ -13,7 +13,7 @@ import { Rental } from "./rentals/rentals.model";
 import { Specification } from "./specifications/specifications.model";
 import { Visitor } from "./visitor/visitor.model";
 import { RentalsModule } from "./rentals/rentals.module";
-
+import { DatabaseModule } from "./database/database.module";
 
 @Module({
     controllers: [],
@@ -37,7 +37,8 @@ import { RentalsModule } from "./rentals/rentals.module";
         VisitorModule,
         SpecificationsModule,
         ComputersModule,
-        RentalsModule
+        RentalsModule,
+        DatabaseModule
       ],
 })
 export class AppModule{}
