@@ -8,6 +8,7 @@ export class DatabaseRequestService {
 
     constructor(@InjectConnection() private readonly sequelize: Sequelize) { }
 
+    //	вывести по заданному администратору список его текущих клиентов;
     async getActivVisitorByAdminId(adminId: number) {
         const visitors = await this.sequelize.query(`
             SELECT DISTINCT
@@ -100,15 +101,41 @@ export class DatabaseRequestService {
         return result;
     }
 
-    // //	отобразить диаграмму: распределение аренды компьютеров по пакетам за выбранный период;
-    // @Get('diagram/:period')
-    // getDiagramData(@Param('period') period: number) {
-    //     return this.dbService.getDiagramData(period);
-    // }
+    //	отобразить диаграмму: распределение аренды компьютеров по пакетам за выбранный период;
+    async getDiagramData(time: number) {
+        const result = await this.sequelize.query(`
+            SELECT 
+                name,
+                COUNT(*) as count
+            FROM package_service
+            WHERE "timeMinutes" = :duration_minutes
+            GROUP BY name
+            ORDER BY count DESC;
+        `, {
+            replacements: { duration_minutes: time * 60 },
+            type: 'SELECT'
+        });
 
-    // //	вывести администраторов, проведших наибольшее количество сессий на текущий момент.
-    // @Get('best-admins')
-    // getBestAdmins() {
-    //     return this.dbService.getBestAdninsByActivRental();
-    //}
+        return result;
+    }
+
+    //	вывести администраторов, проведших наибольшее количество сессий на текущий момент.
+    async getBestAdninsByActivRental() {
+            const result= await this.sequelize.query(`
+                SELECT 
+                    a.id,
+                    a."fullName" as admin_name,
+                    COUNT(r.id) as active_sessions
+                FROM administrator a
+                INNER JOIN rentals r ON a.id = r."adminId"
+                WHERE r.status = 'active'
+                GROUP BY a.id, a."fullName"
+                ORDER BY active_sessions DESC
+                LIMIT 10;
+            `, {
+                type: 'SELECT'
+            });
+        
+            return result;
+        }
 }

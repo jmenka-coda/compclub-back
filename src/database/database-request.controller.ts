@@ -31,17 +31,17 @@ export class DatabaseRequestController {
         return this.dbService.getAverageNumbers();
     }
 
-    // //	отобразить диаграмму: распределение аренды компьютеров по пакетам за выбранный период;
-    // @Get('diagram/:period')
-    // getDiagramData(@Param('period') period: number) {
-    //     return this.dbService.getDiagramData(period);
-    // }
+    //	отобразить диаграмму: распределение аренды компьютеров по пакетам за выбранный период;
+    @Get('diagram/:period')
+    getDiagramData(@Param('period') period: number) {
+        return this.dbService.getDiagramData(period);
+    }
 
-    // //	вывести администраторов, проведших наибольшее количество сессий на текущий момент.
-    // @Get('best-admins')
-    // getBestAdmins(){
-    //     return this.dbService.getBestAdninsByActivRental();
-    // }
+    //	вывести администраторов, проведших наибольшее количество сессий на текущий момент.
+    @Get('best-admins')
+    getBestAdmins(){
+        return this.dbService.getBestAdninsByActivRental();
+    }
 
     //	сформировать документы: чек о запланированной аренде, указывающий дату, пакет услуг и стоимость (Word); отчет об использовании компьютеров, включая дату, длительность и общую стоимость (Excel);
 
