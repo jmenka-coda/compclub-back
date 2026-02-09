@@ -19,17 +19,17 @@ export class DatabaseRequestController {
         return this.dbService.getVisitorsMoreThreeHours();
     }
 
-    // //	отобразить список клиентов, арендующих компьютеры в вечернее время;
-    // @Get('visitors-evening')
-    // getVisitorsEveningTime() {
-    //     return this.dbService.getVisitorsEveningTime();
-    // }
+    //	отобразить список клиентов, арендующих компьютеры в вечернее время;
+    @Get('visitors-evening')
+    getVisitorsEveningTime() {
+        return this.dbService.getVisitorsEveningTime();
+    }
 
-    // //	получить среднее количество часов аренды и среднюю выручку для каждого пакета услуг (утреннего или вечернего) и для каждого периода аренды (1, 3, 5, 7 часов);
-    // @Get('info-averege-nambers')
-    // getAveregeNubers() {
-    //     return this.dbService.getAveregeNubers();
-    // }
+    //	получить среднее количество часов аренды и среднюю выручку для каждого пакета услуг (утреннего или вечернего) и для каждого периода аренды (1, 3, 5, 7 часов);
+    @Get('info-averege-numbers')
+    getAveregeNubers() {
+        return this.dbService.getAverageNumbers();
+    }
 
     // //	отобразить диаграмму: распределение аренды компьютеров по пакетам за выбранный период;
     // @Get('diagram/:period')

@@ -33,7 +33,7 @@ export class DatabaseRequestService {
             INNER JOIN rentals r ON v.id = r."visitorId"
             INNER JOIN package_service ps ON ps.id = r."packageId"
             WHERE ps."timeMinutes" >= (3 * 60)
-                AND r.status = 'active' OR r.status = 'waiting'
+                AND (r.status = 'active' OR r.status = 'waiting')
             ORDER BY v."fullName";
         `, {
             type: 'SELECT'
@@ -42,17 +42,63 @@ export class DatabaseRequestService {
         return visitors;
     }
 
-    // //	отобразить список клиентов, арендующих компьютеры в вечернее время;
-    // @Get('visitors-evening')
-    // getVisitorsEveningTime() {
-    //     return this.dbService.getVisitorsEveningTime();
-    // }
+    //	отобразить список клиентов, арендующих компьютеры в вечернее время;
+    async getVisitorsEveningTime() {
+        const visitors = await this.sequelize.query(`
+            SELECT DISTINCT v.*
+            FROM visitors v
+            INNER JOIN rentals r ON v.id = r."visitorId"
+            INNER JOIN package_service ps ON ps.id = r."packageId"
+            WHERE ps."timeDay" = 'evening'
+                AND (r.status = 'active' OR r.status = 'waiting')
+            ORDER BY v."fullName";
+        `, {
+            type: 'SELECT'
+        });
 
-    // //	получить среднее количество часов аренды и среднюю выручку для каждого пакета услуг (утреннего или вечернего) и для каждого периода аренды (1, 3, 5, 7 часов);
-    // @Get('info-averege-nambers')
-    // getAveregeNubers() {
-    //     return this.dbService.getAveregeNubers();
-    // }
+        return visitors;
+    }
+
+    //	получить среднее количество часов аренды и среднюю выручку для каждого пакета услуг (утреннего или вечернего) и для каждого периода аренды (1, 3, 5, 7 часов);
+    async getAverageNumbers() {
+        const result = await this.sequelize.query(`
+            SELECT 
+                "timeDay",
+                AVG("timeMinutes") / 60.0 as avg_hours,
+                AVG("price") as avg_price
+            FROM package_service
+            WHERE "timeDay" IN ('morning', 'afternoon', 'evening', 'night')
+            GROUP BY "timeDay"
+            ORDER BY 
+                CASE "timeDay"
+                    WHEN 'morning' THEN 1
+                    WHEN 'afternoon' THEN 2
+                    WHEN 'evening' THEN 3
+                    WHEN 'night' THEN 4
+                END;
+
+                SELECT 
+                    "timeMinutes" / 60 as duration_hours,
+                    CASE 
+                        WHEN "timeMinutes" = 60 THEN '1 час'
+                        WHEN "timeMinutes" = 180 THEN '3 часа'
+                        WHEN "timeMinutes" = 300 THEN '5 часов'
+                        WHEN "timeMinutes" = 420 THEN '7 часов'
+                        ELSE "timeMinutes"::text || ' мин'
+                    END as duration_label,
+                    
+                    AVG("timeMinutes") / 60.0 as avg_hours,
+                    AVG("price") as avg_price
+                FROM package_service
+                WHERE "timeMinutes" > 0
+                GROUP BY "timeMinutes"
+                ORDER BY "timeMinutes";
+            `, {
+            type: 'SELECT'
+        });
+
+        return result;
+    }
 
     // //	отобразить диаграмму: распределение аренды компьютеров по пакетам за выбранный период;
     // @Get('diagram/:period')
