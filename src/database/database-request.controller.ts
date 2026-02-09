@@ -15,25 +15,34 @@ export class DatabaseRequestController {
 
     //	отобразить клиентов, арендующих компьютеры на 3 и более часа;
     @Get('visitors-three-h')
-    getVisitorsMoreThreeHours(){
+    getVisitorsMoreThreeHours() {
         return this.dbService.getVisitorsMoreThreeHours();
     }
 
     //	отобразить список клиентов, арендующих компьютеры в вечернее время;
     @Get('visitors-evening')
-    getVisitorsEveningTime(){
+    getVisitorsEveningTime() {
         return this.dbService.getVisitorsEveningTime();
     }
 
     //	получить среднее количество часов аренды и среднюю выручку для каждого пакета услуг (утреннего или вечернего) и для каждого периода аренды (1, 3, 5, 7 часов);
-    @Get()
-
-
+    @Get('info-averege-nambers')
+    getAveregeNubers() {
+        return this.dbService.getAveregeNubers();
+    }
 
     //	отобразить диаграмму: распределение аренды компьютеров по пакетам за выбранный период;
-    
+    @Get('diagram/:period')
+    getDiagramData(@Param('period') period: number) {
+        return this.dbService.getDiagramData(period);
+    }
+
     //	вывести администраторов, проведших наибольшее количество сессий на текущий момент.
-    
+    @Get('best-admins')
+    getBestAdmins(){
+        return this.dbService.getBestAdninsByActivRental();
+    }
+
     //	сформировать документы: чек о запланированной аренде, указывающий дату, пакет услуг и стоимость (Word); отчет об использовании компьютеров, включая дату, длительность и общую стоимость (Excel);
 
 
