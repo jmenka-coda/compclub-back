@@ -15,10 +15,17 @@ import { Visitor } from "./visitor/visitor.model";
 import { RentalsModule } from "./rentals/rentals.module";
 import { DatabaseModule } from "./database/database.module";
 import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from "@nestjs/core";
+import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 
 @Module({
     controllers: [],
-    providers: [],
+    providers: [
+      {
+        provide: APP_GUARD,
+        useClass: JwtAuthGuard,
+      }
+    ],
     imports: [
         ConfigModule.forRoot({
             envFilePath: '.env'

@@ -26,7 +26,6 @@ export class AdministratorsService {
 
     async getAdminByLogin(login: string){
         const admin = await this.adminRepository.findOne({where: {login}, raw: true});
-        console.log(admin);
         if (admin === null){
             throw new HttpException('Нет такого логина', HttpStatus.BAD_REQUEST)
         }
