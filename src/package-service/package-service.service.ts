@@ -21,6 +21,7 @@ export class PackageServiceService {
 
     async getPackageById(id: number) {
         const packageSer = await this.packageSerRepository.findOne({ where: { id } })
+        console.log(packageSer);
         return packageSer;
     }
 }

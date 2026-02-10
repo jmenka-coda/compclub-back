@@ -10,6 +10,9 @@ import { Rental } from 'src/rentals/rentals.model';
   controllers: [AdministratorsController],
   imports: [
     SequelizeModule.forFeature([Administrator, Rental])
+  ],
+  exports: [
+    AdministratorsService
   ]
 })
 

@@ -14,6 +14,7 @@ import { Specification } from "./specifications/specifications.model";
 import { Visitor } from "./visitor/visitor.model";
 import { RentalsModule } from "./rentals/rentals.module";
 import { DatabaseModule } from "./database/database.module";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     controllers: [],
@@ -38,7 +39,8 @@ import { DatabaseModule } from "./database/database.module";
         SpecificationsModule,
         ComputersModule,
         RentalsModule,
-        DatabaseModule
+        DatabaseModule,
+        AuthModule
       ],
 })
 export class AppModule{}

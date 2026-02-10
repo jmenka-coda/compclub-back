@@ -4,4 +4,5 @@ export class CreateAdministratorDto {
     readonly dateOfBirth: Date;
     readonly experience: number;
     readonly hiringDate: Date;
+    readonly login: string;
 }
