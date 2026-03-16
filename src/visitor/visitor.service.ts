@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Visitor } from './visitor.model';
 import { CreateVisitorDto } from './dto/create-visitor.dto';
@@ -16,5 +16,13 @@ export class VisitorService {
     async getAllVisitor(){
         const visitors = await this.visitorRepository.findAll();
         return visitors;
+    }
+    
+    async deleteVisitorById(id: number){
+        const count = await this.visitorRepository.destroy({where: {id}});
+        if (count === 0){
+            throw new HttpException('This id not find', HttpStatus.BAD_REQUEST);
+        }
+        return count;
     }
 }

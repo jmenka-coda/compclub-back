@@ -20,34 +20,34 @@ import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 
 @Module({
     controllers: [],
+    imports: [
+      ConfigModule.forRoot({
+        envFilePath: '.env'
+      }),
+      SequelizeModule.forRoot({
+        dialect: 'postgres',
+        host: process.env.POSTGRES_HOST,
+        port: Number(process.env.POSTGRES_PORT),
+        username: process.env.POSTGRES_USER,
+        password: process.env.POSTGRES_PASSWORD,
+        database: process.env.POSTGRES_DB,
+        models: [Administrator, Computer, PackageService, Rental, Specification, Visitor],
+        autoLoadModels: true,
+      }),
+      AdministratorsModule,
+      PackageServiceModule,
+      VisitorModule,
+      SpecificationsModule,
+      ComputersModule,
+      RentalsModule,
+      DatabaseModule,
+      AuthModule
+    ],
     providers: [
       {
         provide: APP_GUARD,
         useClass: JwtAuthGuard,
       }
     ],
-    imports: [
-        ConfigModule.forRoot({
-            envFilePath: '.env'
-        }),
-        SequelizeModule.forRoot({
-          dialect: 'postgres',
-          host: process.env.POSTGRES_HOST,
-          port: Number(process.env.POSTGRES_PORT),
-          username: process.env.POSTGRES_USER,
-          password: process.env.POSTGRES_PASSWORD,
-          database: process.env.POSTGRES_DB,
-          models: [Administrator, Computer, PackageService, Rental, Specification, Visitor],
-          autoLoadModels: true,
-        }),
-        AdministratorsModule,
-        PackageServiceModule,
-        VisitorModule,
-        SpecificationsModule,
-        ComputersModule,
-        RentalsModule,
-        DatabaseModule,
-        AuthModule
-      ],
-})
+  })
 export class AppModule{}

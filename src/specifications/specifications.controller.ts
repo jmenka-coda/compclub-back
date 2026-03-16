@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { SpecificationsService } from './specifications.service';
 import { CreateSpecificationDto } from './dto/create-specification.dto';
 
@@ -15,5 +15,10 @@ export class SpecificationsController {
     @Get()
     getAll(){
         return this.specificationService.getAllSpecification();
+    }
+    
+    @Delete('/:id')
+    deleteById(@Param('id') id: number){
+        return this.specificationService.deleteSpecificationById(id);
     }
 }

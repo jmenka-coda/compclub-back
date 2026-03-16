@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { PackageServiceService } from './package-service.service';
 import { CreatePackageServiceDto } from './dto/create-packageservice.dto';
 
@@ -20,5 +20,10 @@ export class PackageServiceController {
     @Get('/:id')
     getById(@Param('id') id: number) {
         return this.packageSerService.getPackageById(id);
+    }
+
+    @Get('/:id')
+    deleteById(@Param('id') id: number) {
+        return this.packageSerService.deletePackageById(id);
     }
 }

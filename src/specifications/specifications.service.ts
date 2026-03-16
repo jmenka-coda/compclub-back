@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Specification } from './specifications.model';
 import { CreateSpecificationDto } from './dto/create-specification.dto';
@@ -16,5 +16,13 @@ export class SpecificationsService {
     async getAllSpecification(){
         const specifications = await this.specificationRepository.findAll();
         return specifications;
+    }
+    
+    async deleteSpecificationById(id: number){
+        const count = await this.specificationRepository.destroy({where: {id}});
+        if (count === 0){
+            throw new HttpException('This id not find', HttpStatus.BAD_REQUEST);
+        }
+        return count;
     }
 }

@@ -17,28 +17,30 @@ export class AuthService {
         const admin = await this.validateAdmin(adminLoginDto);
         return this.generateToken(admin);
     }
-    
+
     async registration(adminDto: CreateAdministratorDto) {
         const hashPassword = await bcrypt.hash(adminDto.password, 5);
         const admin = await this.adminService.createAdministrator({ ...adminDto, password: hashPassword })
         return this.generateToken(admin);
     }
-    
-    async generateToken(admin: Administrator){
-        const payload = {login: admin.login, id: admin.id}
+
+    async generateToken(admin: Administrator) {
+        console.log(admin.id)
+        const adminBd = await this.adminService.getAdminById(admin.id)
+        const payload = { login: adminBd.login, id: admin.id }
+
         return {
             token: this.jwtService.sign(payload)
         }
     }
 
-
     private async validateAdmin(adminLoginDto: LoginAdministratorDto) {
-        const admin = await this.adminService.getAdminByLogin(adminLoginDto.login);        
+        const admin = await this.adminService.getAdminByLogin(adminLoginDto.login);
 
         const passwordEquals = await bcrypt.compare(adminLoginDto.password, admin.password);
-        if (admin && passwordEquals){
+        if (admin && passwordEquals) {
             return admin;
         }
-        throw new UnauthorizedException({message: 'Некоректный логин или пароль'});
+        throw new UnauthorizedException({ message: 'Некоректный логин или пароль' });
     }
 }

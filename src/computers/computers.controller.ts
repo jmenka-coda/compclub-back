@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ComputersService } from './computers.service';
 import { CreateComputerDto } from './dto/create-computer.dto';
 
@@ -15,5 +15,10 @@ export class ComputersController {
     @Get()
     getAll(){
         return this.computerService.getAllComputers();
+    }
+
+    @Delete('/:id')
+    deleteById(@Param('id') id: number){
+        return this.computerService.deleteComputerById(id);
     }
 }

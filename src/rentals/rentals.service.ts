@@ -40,4 +40,12 @@ export class RentalsService {
         const rentals = await this.rentalRepository.findAll({ include: { all: true } });
         return rentals;
     }
+    
+    async deleteRentalById(id: number) {
+        const count = await this.rentalRepository.destroy({where: {id}});
+        if (count === 0){
+            throw new HttpException('This id not find', HttpStatus.BAD_REQUEST);
+        }
+        return count;
+    }
 }

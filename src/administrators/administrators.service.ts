@@ -7,33 +7,49 @@ import { CreateAdministratorDto } from './dto/create-admin.dto';
 export class AdministratorsService {
 
     constructor(@InjectModel(Administrator) private adminRepository: typeof Administrator) { }
-    
+
     async createAdministrator(dto: CreateAdministratorDto) {
         const admin = await this.adminRepository.create(dto);
 
         const login = await this.getGeneratedLoginFromFullName(admin.get('fullName'), admin.get('id'));
         console.log(login);
         admin.set('login', login);
-        admin.save();
+        await admin.save();
 
         return admin;
     }
 
     async getAllAdministrators() {
-        const admins = await this.adminRepository.findAll();
+        const admins = await this.adminRepository.findAll({ attributes: { exclude: ['password'] } });
         return admins;
     }
 
-    async getAdminByLogin(login: string){
-        const admin = await this.adminRepository.findOne({where: {login}, raw: true});
-        if (admin === null){
+    async getAdminByLogin(login: string) {
+        const admin = await this.adminRepository.findOne({ where: { login }, raw: true });
+        if (admin === null) {
             throw new HttpException('Нет такого логина', HttpStatus.BAD_REQUEST)
         }
 
         return admin;
     }
 
-    async getGeneratedLoginFromFullName(fullName: string, id: number){
+    async getAdminById(id: number) {
+        const admin = await this.adminRepository.findOne({ where: { id }, raw: true, attributes: {exclude: ['password']} });
+        if (admin === null) {
+            throw new HttpException('Нет такого id', HttpStatus.BAD_REQUEST)
+        }
+        return admin
+    }
+
+    async deleteAdminById(id: number) {
+        const numb = await this.adminRepository.destroy({where: {id}});
+        if (numb === 0){
+            throw new HttpException('Нет такого id', HttpStatus.BAD_REQUEST);            
+        }
+        return numb
+    }
+
+    private async getGeneratedLoginFromFullName(fullName: string, id: number) {
         const array = fullName.split(' ');
         let login = "";
         for (let i = 0; i < array.length; i++) {

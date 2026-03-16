@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { RentalsService } from './rentals.service';
 import { CreateRentalDto } from './dto/create-rentals.dto';
 
@@ -15,5 +15,10 @@ export class RentalsController {
     @Get()
     getAll(){
         return this.rentalService.getAllRental();
+    }
+
+    @Delete('/:id')
+    deleteById(@Param('id') id: number){
+        return this.rentalService.deleteRentalById(id);
     }
 }

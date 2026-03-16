@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { PackageService } from './package-service.model';
 import { CreatePackageServiceDto } from './dto/create-packageservice.dto';
@@ -21,7 +21,15 @@ export class PackageServiceService {
 
     async getPackageById(id: number) {
         const packageSer = await this.packageSerRepository.findOne({ where: { id } })
-        console.log(packageSer);
+        return packageSer;
+    }
+    
+    async deletePackageById(id: number) {
+        const packageSer = await this.packageSerRepository.findOne({ where: { id } })
+        if (packageSer === null){
+            throw new HttpException('This id not find', HttpStatus.BAD_REQUEST);
+        }
+        packageSer.destroy();
         return packageSer;
     }
 }

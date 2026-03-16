@@ -1,4 +1,4 @@
-import { Body, Post, Controller, Get } from '@nestjs/common';
+import { Body, Post, Controller, Get, Param, Delete } from '@nestjs/common';
 import { CreateAdministratorDto } from './dto/create-admin.dto';
 import { AdministratorsService } from './administrators.service';
 
@@ -15,5 +15,15 @@ export class AdministratorsController {
     @Get()
     getAll(){
         return this.adminService.getAllAdministrators();
+    }
+
+    @Get('/:id')
+    getById(@Param('id') id: number) {
+        return this.adminService.getAdminById(id);
+    }
+
+    @Delete('/:id')
+    deleteById(@Param('id') id: number){
+        return this.adminService.deleteAdminById(id);
     }
 }
